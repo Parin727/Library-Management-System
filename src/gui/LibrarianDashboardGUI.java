@@ -4,7 +4,9 @@ import logic.BookRecordManager;
 import models.Book;
 import models.User;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.util.List;
 
@@ -18,17 +20,22 @@ public class LibrarianDashboardGUI extends JFrame {
         this.user = user;
         this.bookManager = new BookRecordManager();
         setTitle("Librarian Dashboard - " + user.getUsername());
-        setSize(900, 600);
+        setSize(950, 650);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        
+        UIStyles.applyGlobalStyles(this);
         setLayout(new BorderLayout());
 
         // Top Panel - Actions
-        JPanel topPanel = new JPanel(new FlowLayout());
-        JButton addButton = new JButton("Add Book");
-        JButton updateButton = new JButton("Update Selected");
-        JButton deleteButton = new JButton("Delete Selected");
-        JButton refreshButton = new JButton("Refresh List");
+        JPanel topPanel = UIStyles.createPanel();
+        topPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 15, 15));
+        topPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        
+        JButton addButton = new RoundedButton("Add Book", UIStyles.SUCCESS_COLOR);
+        JButton updateButton = new RoundedButton("Update Selected", UIStyles.WARNING_COLOR);
+        JButton deleteButton = new RoundedButton("Delete Selected", UIStyles.DANGER_COLOR);
+        JButton refreshButton = new RoundedButton("Refresh List", UIStyles.INFO_COLOR);
         
         topPanel.add(addButton);
         topPanel.add(updateButton);
@@ -40,6 +47,8 @@ public class LibrarianDashboardGUI extends JFrame {
         String[] columns = {"ID", "Title", "Author", "ISBN", "Qty", "Available"};
         tableModel = new DefaultTableModel(columns, 0);
         bookTable = new JTable(tableModel);
+        styleTable(bookTable);
+        
         add(new JScrollPane(bookTable), BorderLayout.CENTER);
 
         // Action Listeners
@@ -63,20 +72,46 @@ public class LibrarianDashboardGUI extends JFrame {
 
     private void showAddBookDialog() {
         JDialog dialog = new JDialog(this, "Add Book", true);
-        dialog.setLayout(new GridLayout(6, 2));
-        dialog.setSize(400, 300);
+        dialog.setLayout(new GridBagLayout());
+        dialog.setSize(450, 400);
+        dialog.setLocationRelativeTo(this);
+        dialog.getContentPane().setBackground(UIStyles.BACKGROUND_COLOR);
 
-        JTextField titleField = new JTextField();
-        JTextField authorField = new JTextField();
-        JTextField isbnField = new JTextField();
-        JTextField qtyField = new JTextField();
+        JPanel panel = UIStyles.createPanel();
+        panel.setLayout(new GridBagLayout());
+        panel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        dialog.add(new JLabel("Title:")); dialog.add(titleField);
-        dialog.add(new JLabel("Author:")); dialog.add(authorField);
-        dialog.add(new JLabel("ISBN:")); dialog.add(isbnField);
-        dialog.add(new JLabel("Quantity:")); dialog.add(qtyField);
+        JTextField titleField = UIStyles.createTextField();
+        JTextField authorField = UIStyles.createTextField();
+        JTextField isbnField = UIStyles.createTextField();
+        JTextField qtyField = UIStyles.createTextField();
+        
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        
+        gbc.gridx = 0; gbc.gridy = 0;
+        panel.add(UIStyles.createLabel("Title:"), gbc);
+        gbc.gridx = 1;
+        titleField.setPreferredSize(new Dimension(200, 30));
+        panel.add(titleField, gbc);
 
-        JButton saveButton = new JButton("Save");
+        gbc.gridx = 0; gbc.gridy++;
+        panel.add(UIStyles.createLabel("Author:"), gbc);
+        gbc.gridx = 1;
+        panel.add(authorField, gbc);
+
+        gbc.gridx = 0; gbc.gridy++;
+        panel.add(UIStyles.createLabel("ISBN:"), gbc);
+        gbc.gridx = 1;
+        panel.add(isbnField, gbc);
+
+        gbc.gridx = 0; gbc.gridy++;
+        panel.add(UIStyles.createLabel("Quantity:"), gbc);
+        gbc.gridx = 1;
+        panel.add(qtyField, gbc);
+
+        JButton saveButton = new RoundedButton("Save", UIStyles.SUCCESS_COLOR);
         saveButton.addActionListener(e -> {
             try {
                 int qty = Integer.parseInt(qtyField.getText());
@@ -92,7 +127,13 @@ public class LibrarianDashboardGUI extends JFrame {
                 JOptionPane.showMessageDialog(dialog, "Invalid Quantity");
             }
         });
-        dialog.add(saveButton);
+        
+        gbc.gridx = 0; gbc.gridy++;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        panel.add(saveButton, gbc);
+        
+        dialog.add(panel);
         dialog.setVisible(true);
     }
 
@@ -104,20 +145,47 @@ public class LibrarianDashboardGUI extends JFrame {
         Book book = bookManager.getBookById(bookId);
 
         JDialog dialog = new JDialog(this, "Update Book", true);
-        dialog.setLayout(new GridLayout(6, 2));
-        dialog.setSize(400, 300);
+        dialog.setLayout(new GridBagLayout());
+        dialog.setSize(450, 400);
+        dialog.setLocationRelativeTo(this);
+        dialog.getContentPane().setBackground(UIStyles.BACKGROUND_COLOR);
 
-        JTextField titleField = new JTextField(book.getTitle());
-        JTextField authorField = new JTextField(book.getAuthor());
-        JTextField qtyField = new JTextField(String.valueOf(book.getQuantity()));
-        JTextField availField = new JTextField(String.valueOf(book.getAvailableQuantity()));
+        JPanel panel = UIStyles.createPanel();
+        panel.setLayout(new GridBagLayout());
+        panel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        dialog.add(new JLabel("Title:")); dialog.add(titleField);
-        dialog.add(new JLabel("Author:")); dialog.add(authorField);
-        dialog.add(new JLabel("Total Qty:")); dialog.add(qtyField);
-        dialog.add(new JLabel("Available Qty:")); dialog.add(availField);
+        JTextField titleField = UIStyles.createTextField(); titleField.setText(book.getTitle());
+        JTextField authorField = UIStyles.createTextField(); authorField.setText(book.getAuthor());
+        JTextField qtyField = UIStyles.createTextField(); qtyField.setText(String.valueOf(book.getQuantity()));
+        JTextField availField = UIStyles.createTextField(); availField.setText(String.valueOf(book.getAvailableQuantity()));
+        
+        titleField.setPreferredSize(new Dimension(200, 30));
 
-        JButton updateBtn = new JButton("Update");
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        gbc.gridx = 0; gbc.gridy = 0;
+        panel.add(UIStyles.createLabel("Title:"), gbc);
+        gbc.gridx = 1;
+        panel.add(titleField, gbc);
+
+        gbc.gridx = 0; gbc.gridy++;
+        panel.add(UIStyles.createLabel("Author:"), gbc);
+        gbc.gridx = 1;
+        panel.add(authorField, gbc);
+
+        gbc.gridx = 0; gbc.gridy++;
+        panel.add(UIStyles.createLabel("Total Qty:"), gbc);
+        gbc.gridx = 1;
+        panel.add(qtyField, gbc);
+
+        gbc.gridx = 0; gbc.gridy++;
+        panel.add(UIStyles.createLabel("Available Qty:"), gbc);
+        gbc.gridx = 1;
+        panel.add(availField, gbc);
+
+        JButton updateBtn = new RoundedButton("Update", UIStyles.WARNING_COLOR);
         updateBtn.addActionListener(e -> {
             try {
                 int qty = Integer.parseInt(qtyField.getText());
@@ -134,7 +202,13 @@ public class LibrarianDashboardGUI extends JFrame {
                 JOptionPane.showMessageDialog(dialog, "Invalid Numbers");
             }
         });
-        dialog.add(updateBtn);
+        
+        gbc.gridx = 0; gbc.gridy++;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        panel.add(updateBtn, gbc);
+        
+        dialog.add(panel);
         dialog.setVisible(true);
     }
 
@@ -149,5 +223,15 @@ public class LibrarianDashboardGUI extends JFrame {
                 JOptionPane.showMessageDialog(this, "Error deleting book.");
             }
         }
+    }
+    
+    private void styleTable(JTable table) {
+        table.setFont(UIStyles.REGULAR_FONT);
+        table.setRowHeight(25);
+        table.setSelectionBackground(UIStyles.PRIMARY_COLOR);
+        table.setSelectionForeground(Color.WHITE);
+        JTableHeader header = table.getTableHeader();
+        header.setFont(UIStyles.BUTTON_FONT);
+        header.setBackground(Color.LIGHT_GRAY);
     }
 }

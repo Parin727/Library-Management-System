@@ -3,6 +3,7 @@ package gui;
 import database.DBConnection;
 import models.*;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,24 +20,65 @@ public class LoginGUI extends JFrame {
 
     public LoginGUI() {
         setTitle("Library Management System - Login");
-        setSize(400, 300);
+        setSize(450, 350); // Slightly larger
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new GridLayout(4, 2, 10, 10));
+        
+        // Apply global background
+        getContentPane().setBackground(UIStyles.BACKGROUND_COLOR);
+        setLayout(new GridBagLayout());
 
-        add(new JLabel("Username:"));
-        usernameField = new JTextField();
-        add(usernameField);
+        JPanel mainPanel = UIStyles.createPanel();
+        mainPanel.setLayout(new GridBagLayout());
+        mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        add(new JLabel("Password:"));
-        passwordField = new JPasswordField();
-        add(passwordField);
+        // Title
+        JLabel titleLabel = UIStyles.createTitleLabel("Login");
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        mainPanel.add(titleLabel, gbc);
 
-        loginButton = new JButton("Login");
-        add(loginButton);
+        // Username
+        gbc.gridwidth = 1;
+        gbc.gridy++;
+        gbc.gridx = 0;
+        mainPanel.add(UIStyles.createLabel("Username:"), gbc);
 
-        registerButton = new JButton("Register");
-        add(registerButton);
+        gbc.gridx = 1;
+        usernameField = UIStyles.createTextField();
+        usernameField.setPreferredSize(new Dimension(200, 30));
+        mainPanel.add(usernameField, gbc);
+
+        // Password
+        gbc.gridy++;
+        gbc.gridx = 0;
+        mainPanel.add(UIStyles.createLabel("Password:"), gbc);
+
+        gbc.gridx = 1;
+        passwordField = UIStyles.createPasswordField();
+        passwordField.setPreferredSize(new Dimension(200, 30));
+        mainPanel.add(passwordField, gbc);
+
+        // Buttons
+        gbc.gridy++;
+        gbc.gridx = 0;
+        gbc.gridwidth = 2;
+        
+        JPanel buttonPanel = UIStyles.createPanel();
+        loginButton = new RoundedButton("Login", UIStyles.PRIMARY_COLOR);
+        registerButton = new RoundedButton("Register", UIStyles.SUCCESS_COLOR);
+        
+        buttonPanel.add(loginButton);
+        buttonPanel.add(registerButton);
+        mainPanel.add(buttonPanel, gbc);
+
+        add(mainPanel);
 
         loginButton.addActionListener(new ActionListener() {
             @Override

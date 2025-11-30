@@ -4,7 +4,9 @@ import logic.*;
 import models.*;
 import database.DBConnection;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,11 +20,16 @@ public class UserDashboardGUI extends JFrame {
     public UserDashboardGUI(User user) {
         this.user = user;
         setTitle("User Dashboard - " + user.getUsername() + " (" + user.getRole() + ")");
-        setSize(800, 600);
+        setSize(900, 650);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        
+        // Global style
+        UIStyles.applyGlobalStyles(this);
 
         tabbedPane = new JTabbedPane();
+        tabbedPane.setFont(UIStyles.REGULAR_FONT);
+        tabbedPane.setBackground(UIStyles.BACKGROUND_COLOR);
         
         tabbedPane.addTab("Reserve Book", createReservePanel());
         tabbedPane.addTab("My Books / Renew", createMyBooksPanel());
@@ -33,17 +40,26 @@ public class UserDashboardGUI extends JFrame {
     }
 
     private JPanel createReservePanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-        JPanel searchPanel = new JPanel();
-        JTextField searchField = new JTextField(20);
-        JButton searchButton = new JButton("Search");
-        searchPanel.add(new JLabel("Search Title/Author:"));
+        JPanel panel = UIStyles.createPanel();
+        panel.setLayout(new BorderLayout(10, 10));
+        panel.setBorder(new EmptyBorder(15, 15, 15, 15));
+
+        JPanel searchPanel = UIStyles.createPanel();
+        searchPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        
+        JTextField searchField = UIStyles.createTextField();
+        searchField.setPreferredSize(new Dimension(250, 30));
+        
+        JButton searchButton = new RoundedButton("Search", UIStyles.PRIMARY_COLOR);
+        
+        searchPanel.add(UIStyles.createLabel("Search Title/Author:"));
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
 
         String[] columns = {"ID", "Title", "Author", "Available"};
         DefaultTableModel model = new DefaultTableModel(columns, 0);
         JTable table = new JTable(model);
+        styleTable(table);
         
         searchButton.addActionListener(e -> {
             model.setRowCount(0);
@@ -54,7 +70,7 @@ public class UserDashboardGUI extends JFrame {
             }
         });
 
-        JButton reserveButton = new JButton("Reserve Selected Book");
+        JButton reserveButton = new RoundedButton("Reserve Selected Book", UIStyles.SUCCESS_COLOR);
         reserveButton.addActionListener(e -> {
             int row = table.getSelectedRow();
             if (row != -1) {
@@ -67,23 +83,30 @@ public class UserDashboardGUI extends JFrame {
                 }
             }
         });
+        
+        JPanel bottomPanel = UIStyles.createPanel();
+        bottomPanel.add(reserveButton);
 
         panel.add(searchPanel, BorderLayout.NORTH);
         panel.add(new JScrollPane(table), BorderLayout.CENTER);
-        panel.add(reserveButton, BorderLayout.SOUTH);
+        panel.add(bottomPanel, BorderLayout.SOUTH);
         return panel;
     }
 
     private JPanel createMyBooksPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
+        JPanel panel = UIStyles.createPanel();
+        panel.setLayout(new BorderLayout(10, 10));
+        panel.setBorder(new EmptyBorder(15, 15, 15, 15));
+
         String[] columns = {"Transaction ID", "Book", "Due Date", "Status"};
         DefaultTableModel model = new DefaultTableModel(columns, 0);
         JTable table = new JTable(model);
+        styleTable(table);
 
-        JButton refreshButton = new JButton("Refresh");
+        JButton refreshButton = new RoundedButton("Refresh", UIStyles.INFO_COLOR);
         refreshButton.addActionListener(e -> loadMyBooks(model));
 
-        JButton renewButton = new JButton("Renew Selected");
+        JButton renewButton = new RoundedButton("Renew Selected", UIStyles.WARNING_COLOR);
         renewButton.addActionListener(e -> {
             int row = table.getSelectedRow();
             if (row != -1) {
@@ -98,7 +121,7 @@ public class UserDashboardGUI extends JFrame {
             }
         });
 
-        JPanel btnPanel = new JPanel();
+        JPanel btnPanel = UIStyles.createPanel();
         btnPanel.add(refreshButton);
         btnPanel.add(renewButton);
 
@@ -130,23 +153,38 @@ public class UserDashboardGUI extends JFrame {
     }
 
     private JPanel createFinePanel() {
-        JPanel panel = new JPanel(new FlowLayout());
-        JLabel fineLabel = new JLabel("Total Fine: $0.00");
-        JButton payButton = new JButton("Pay Fine");
+        JPanel panel = UIStyles.createPanel();
+        panel.setLayout(new GridBagLayout());
+        
+        JLabel fineLabel = UIStyles.createTitleLabel("Total Fine: $0.00");
+        JButton payButton = new RoundedButton("Pay Fine", UIStyles.DANGER_COLOR);
         
         payButton.addActionListener(e -> {
              JOptionPane.showMessageDialog(this, "Fine Paid! (Simulation)");
         });
 
-        panel.add(fineLabel);
-        panel.add(payButton);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        
+        gbc.gridx = 0; gbc.gridy = 0;
+        panel.add(fineLabel, gbc);
+        
+        gbc.gridy = 1;
+        panel.add(payButton, gbc);
+        
         return panel;
     }
 
     private JPanel createFeedbackPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
+        JPanel panel = UIStyles.createPanel();
+        panel.setLayout(new BorderLayout(10, 10));
+        panel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        
         JTextArea feedbackArea = new JTextArea();
-        JButton submitButton = new JButton("Submit Feedback");
+        feedbackArea.setFont(UIStyles.REGULAR_FONT);
+        feedbackArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        
+        JButton submitButton = new RoundedButton("Submit Feedback", UIStyles.PRIMARY_COLOR);
 
         submitButton.addActionListener(e -> {
             FeedbackManager fm = new FeedbackManager();
@@ -158,9 +196,23 @@ public class UserDashboardGUI extends JFrame {
             }
         });
 
-        panel.add(new JLabel("Enter your feedback:"), BorderLayout.NORTH);
+        panel.add(UIStyles.createLabel("Enter your feedback:"), BorderLayout.NORTH);
         panel.add(new JScrollPane(feedbackArea), BorderLayout.CENTER);
-        panel.add(submitButton, BorderLayout.SOUTH);
+        
+        JPanel btnPanel = UIStyles.createPanel();
+        btnPanel.add(submitButton);
+        panel.add(btnPanel, BorderLayout.SOUTH);
+        
         return panel;
+    }
+    
+    private void styleTable(JTable table) {
+        table.setFont(UIStyles.REGULAR_FONT);
+        table.setRowHeight(25);
+        table.setSelectionBackground(UIStyles.PRIMARY_COLOR);
+        table.setSelectionForeground(Color.WHITE);
+        JTableHeader header = table.getTableHeader();
+        header.setFont(UIStyles.BUTTON_FONT);
+        header.setBackground(Color.LIGHT_GRAY);
     }
 }
