@@ -2,6 +2,7 @@ package gui;
 
 import database.DBConnection;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,25 +19,72 @@ public class RegisterGUI extends JFrame {
 
     public RegisterGUI() {
         setTitle("Register User");
-        setSize(400, 300);
+        setSize(450, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new GridLayout(4, 2, 10, 10));
+        
+        // Apply global background
+        getContentPane().setBackground(UIStyles.BACKGROUND_COLOR);
+        setLayout(new GridBagLayout());
 
-        add(new JLabel("Username:"));
-        usernameField = new JTextField();
-        add(usernameField);
+        JPanel mainPanel = UIStyles.createPanel();
+        mainPanel.setLayout(new GridBagLayout());
+        mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        add(new JLabel("Password:"));
-        passwordField = new JPasswordField();
-        add(passwordField);
+        // Title
+        JLabel titleLabel = UIStyles.createTitleLabel("Register New User");
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        mainPanel.add(titleLabel, gbc);
 
-        add(new JLabel("Role:"));
+        // Username
+        gbc.gridwidth = 1;
+        gbc.gridy++;
+        gbc.gridx = 0;
+        mainPanel.add(UIStyles.createLabel("Username:"), gbc);
+
+        gbc.gridx = 1;
+        usernameField = UIStyles.createTextField();
+        usernameField.setPreferredSize(new Dimension(200, 30));
+        mainPanel.add(usernameField, gbc);
+
+        // Password
+        gbc.gridy++;
+        gbc.gridx = 0;
+        mainPanel.add(UIStyles.createLabel("Password:"), gbc);
+
+        gbc.gridx = 1;
+        passwordField = UIStyles.createPasswordField();
+        passwordField.setPreferredSize(new Dimension(200, 30));
+        mainPanel.add(passwordField, gbc);
+
+        // Role
+        gbc.gridy++;
+        gbc.gridx = 0;
+        mainPanel.add(UIStyles.createLabel("Role:"), gbc);
+
+        gbc.gridx = 1;
         roleBox = new JComboBox<>(new String[]{"STUDENT", "STAFF"});
-        add(roleBox);
+        roleBox.setFont(UIStyles.REGULAR_FONT);
+        roleBox.setBackground(Color.WHITE);
+        mainPanel.add(roleBox, gbc);
 
-        registerButton = new JButton("Register");
-        add(registerButton);
+        // Register Button
+        gbc.gridy++;
+        gbc.gridx = 0;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        
+        registerButton = new RoundedButton("Register", UIStyles.SUCCESS_COLOR);
+        mainPanel.add(registerButton, gbc);
+
+        add(mainPanel);
 
         registerButton.addActionListener(new ActionListener() {
             @Override
