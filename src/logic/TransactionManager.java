@@ -34,7 +34,6 @@ public class TransactionManager {
     }
 
     public boolean renewBook(int transactionId) {
-        // Check if already overdue
         String checkSql = "SELECT due_date FROM transactions WHERE transaction_id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(checkSql)) {
