@@ -27,7 +27,6 @@ public class LibrarianDashboardGUI extends JFrame {
         UIStyles.applyGlobalStyles(this);
         setLayout(new BorderLayout());
 
-        // Top Panel - Actions
         JPanel topPanel = UIStyles.createPanel();
         topPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 15, 15));
         topPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -43,7 +42,6 @@ public class LibrarianDashboardGUI extends JFrame {
         topPanel.add(refreshButton);
         add(topPanel, BorderLayout.NORTH);
 
-        // Center Panel - Table
         String[] columns = {"ID", "Title", "Author", "ISBN", "Qty", "Available"};
         tableModel = new DefaultTableModel(columns, 0);
         bookTable = new JTable(tableModel);
@@ -51,7 +49,6 @@ public class LibrarianDashboardGUI extends JFrame {
         
         add(new JScrollPane(bookTable), BorderLayout.CENTER);
 
-        // Action Listeners
         addButton.addActionListener(e -> showAddBookDialog());
         updateButton.addActionListener(e -> showUpdateBookDialog());
         deleteButton.addActionListener(e -> deleteSelectedBook());
