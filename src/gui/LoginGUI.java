@@ -20,11 +20,10 @@ public class LoginGUI extends JFrame {
 
     public LoginGUI() {
         setTitle("Library Management System - Login");
-        setSize(450, 350); // Slightly larger
+        setSize(450, 350); 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        
-        // Apply global background
+
         getContentPane().setBackground(UIStyles.BACKGROUND_COLOR);
         setLayout(new GridBagLayout());
 
@@ -36,7 +35,6 @@ public class LoginGUI extends JFrame {
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Title
         JLabel titleLabel = UIStyles.createTitleLabel("Login");
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         gbc.gridx = 0;
@@ -44,7 +42,6 @@ public class LoginGUI extends JFrame {
         gbc.gridwidth = 2;
         mainPanel.add(titleLabel, gbc);
 
-        // Username
         gbc.gridwidth = 1;
         gbc.gridy++;
         gbc.gridx = 0;
@@ -55,7 +52,6 @@ public class LoginGUI extends JFrame {
         usernameField.setPreferredSize(new Dimension(200, 30));
         mainPanel.add(usernameField, gbc);
 
-        // Password
         gbc.gridy++;
         gbc.gridx = 0;
         mainPanel.add(UIStyles.createLabel("Password:"), gbc);
@@ -65,7 +61,6 @@ public class LoginGUI extends JFrame {
         passwordField.setPreferredSize(new Dimension(200, 30));
         mainPanel.add(passwordField, gbc);
 
-        // Buttons
         gbc.gridy++;
         gbc.gridx = 0;
         gbc.gridwidth = 2;
