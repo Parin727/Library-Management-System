@@ -24,7 +24,6 @@ public class UserDashboardGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         
-        // Global style
         UIStyles.applyGlobalStyles(this);
 
         tabbedPane = new JTabbedPane();
@@ -128,7 +127,7 @@ public class UserDashboardGUI extends JFrame {
         panel.add(new JScrollPane(table), BorderLayout.CENTER);
         panel.add(btnPanel, BorderLayout.SOUTH);
         
-        loadMyBooks(model); // Initial load
+        loadMyBooks(model); 
         return panel;
     }
 
