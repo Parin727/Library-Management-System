@@ -10,7 +10,6 @@ public class DatabaseSetup {
              Statement stmt = conn.createStatement()) {
             
             if (conn != null) {
-                // Create Users Table
                 String createUsers = "CREATE TABLE IF NOT EXISTS users (" +
                         "user_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         "username TEXT UNIQUE NOT NULL, " +
@@ -20,7 +19,6 @@ public class DatabaseSetup {
                         ");";
                 stmt.execute(createUsers);
 
-                // Create Books Table
                 String createBooks = "CREATE TABLE IF NOT EXISTS books (" +
                         "book_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         "title TEXT NOT NULL, " +
@@ -31,7 +29,6 @@ public class DatabaseSetup {
                         ");";
                 stmt.execute(createBooks);
 
-                // Create Transactions Table
                 String createTransactions = "CREATE TABLE IF NOT EXISTS transactions (" +
                         "transaction_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         "user_id INTEGER, " +
@@ -46,7 +43,6 @@ public class DatabaseSetup {
                         ");";
                 stmt.execute(createTransactions);
 
-                // Create Feedback Table
                 String createFeedback = "CREATE TABLE IF NOT EXISTS feedback (" +
                         "feedback_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         "user_id INTEGER, " +
@@ -56,8 +52,6 @@ public class DatabaseSetup {
                         ");";
                 stmt.execute(createFeedback);
 
-                // Insert Default Librarian (if not exists)
-                // SQLite doesn't support ON DUPLICATE KEY UPDATE directly like MySQL, so we use INSERT OR IGNORE
                 String insertAdmin = "INSERT OR IGNORE INTO users (username, password, role, library_card_id) " +
                         "VALUES ('admin', 'admin123', 'LIBRARIAN', 'LIB-ADMIN-001');";
                 stmt.execute(insertAdmin);
