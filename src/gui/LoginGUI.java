@@ -20,7 +20,7 @@ public class LoginGUI extends JFrame {
 
     public LoginGUI() {
         setTitle("Library Management System - Login");
-        setSize(450, 350); 
+        setSize(450, 350);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -30,7 +30,7 @@ public class LoginGUI extends JFrame {
         JPanel mainPanel = UIStyles.createPanel();
         mainPanel.setLayout(new GridBagLayout());
         mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
-        
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -64,11 +64,11 @@ public class LoginGUI extends JFrame {
         gbc.gridy++;
         gbc.gridx = 0;
         gbc.gridwidth = 2;
-        
+
         JPanel buttonPanel = UIStyles.createPanel();
         loginButton = new RoundedButton("Login", UIStyles.PRIMARY_COLOR);
         registerButton = new RoundedButton("Register", UIStyles.SUCCESS_COLOR);
-        
+
         buttonPanel.add(loginButton);
         buttonPanel.add(registerButton);
         mainPanel.add(buttonPanel, gbc);
@@ -96,7 +96,7 @@ public class LoginGUI extends JFrame {
 
         String sql = "SELECT * FROM users WHERE username=? AND password=?";
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, username);
             pstmt.setString(2, password);
             ResultSet rs = pstmt.executeQuery();
@@ -112,18 +112,20 @@ public class LoginGUI extends JFrame {
                     new UserDashboardGUI(user).setVisible(true);
                 } else if ("STAFF".equalsIgnoreCase(role)) {
                     user = new Staff(userId, username, password, libCard);
-                    new UserDashboardGUI(user).setVisible(true);
+                    new StaffDashboardGUI(user).setVisible(true);
                 } else if ("LIBRARIAN".equalsIgnoreCase(role)) {
                     user = new Librarian(userId, username, password, libCard);
                     new LibrarianDashboardGUI(user).setVisible(true);
                 }
                 this.dispose();
             } else {
-                JOptionPane.showMessageDialog(this, "Invalid username or password", "Login Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Invalid username or password", "Login Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Database Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Database Error: " + e.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 }
