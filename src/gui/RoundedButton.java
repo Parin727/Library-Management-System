@@ -30,7 +30,7 @@ public class RoundedButton extends JButton {
         setOpaque(false);
         setCursor(new Cursor(Cursor.HAND_CURSOR));
         
-        // Add padding
+    
         setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
         addMouseListener(new MouseAdapter() {
